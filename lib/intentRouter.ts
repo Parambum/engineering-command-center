@@ -1,4 +1,4 @@
-import { COMMITS, NODES, PROFILE } from "@/lib/data";
+import { COMMITS, EDGES, NODES, PROFILE } from "@/lib/data";
 
 // ---------------------------------------------------------------------------
 // Client-side keyword/intent router — Agent-Aditya v1.0 works fully offline.
@@ -125,13 +125,14 @@ export function routeIntent(raw: string): RoutedResponse {
     };
   }
 
-  if (q === "/skills" || q.includes("skill") || q.includes("stack") || q.includes("tech")) {
-    const skills = NODES.filter((n) => n.type === "skill").map((n) => n.label);
+  if (q === "/skills" || q.includes("skill") || q.includes("stack") || q.includes("tech") || q.includes("language")) {
     return {
       lines: [
         "[agent] loaded skill packages:",
         "",
-        ...skills.map((s) => `  ✓ ${s}`),
+        `  languages  : ${PROFILE.skills.languages.join(", ")}`,
+        `  frameworks : ${PROFILE.skills.frameworks.join(", ")}`,
+        `  libs/tools : ${PROFILE.skills.tools.join(", ")}`,
         "",
         "[sys] blue nodes on the graph — click any to see where it's used",
       ],
@@ -150,8 +151,14 @@ export function routeIntent(raw: string): RoutedResponse {
         "▸ Technical Intern — WeCare Digital (May – July 2025)",
         ...nodeSummary("wecare"),
         "",
-        "▸ Technical Executive — ACM MPSTME",
+        "▸ Technical Executive — ACM MPSTME (July 2024 – July 2025)",
         ...nodeSummary("acm"),
+        "",
+        "▸ Business Development Executive — GDG MPSTME (Aug 2025 – Present)",
+        ...nodeSummary("gdg"),
+        "",
+        "▸ Volunteer — Genesis Worldwide Foundation (Jun – Aug 2025)",
+        ...nodeSummary("genesis"),
       ],
       tone: "info",
       actions: { focusNode: "ml-research" },
@@ -200,6 +207,7 @@ export function routeIntent(raw: string): RoutedResponse {
       lines: [
         "[agent] opening comms channels…",
         `  mail     → ${PROFILE.email}`,
+        `  phone    → ${PROFILE.phone}`,
         `  linkedin → ${PROFILE.linkedin}`,
         `  github   → ${PROFILE.github}`,
         "[sys] links are live in the header bar ↑",
@@ -260,6 +268,22 @@ export function routeIntent(raw: string): RoutedResponse {
     };
   }
 
+  if (q.includes("gdg") || q.includes("google developer") || q.includes("sponsor") || q.includes("business dev")) {
+    return {
+      lines: ["[agent] GDG MPSTME — Business Development Executive:", ...nodeSummary("gdg")],
+      tone: "info",
+      actions: { focusNode: "gdg" },
+    };
+  }
+
+  if (q.includes("volunteer") || q.includes("genesis") || q.includes("community")) {
+    return {
+      lines: ["[agent] Genesis Worldwide Foundation:", ...nodeSummary("genesis")],
+      tone: "info",
+      actions: { focusNode: "genesis" },
+    };
+  }
+
   if (q.includes("timeline") || q.includes("history") || q.includes("log")) {
     return {
       lines: [
@@ -285,8 +309,8 @@ export const BOOT_SEQUENCE: string[] = [
   "AGENT-ADITYA v1.0 — engineering command center",
   "──────────────────────────────────────────────",
   "[boot] kernel loaded … OK",
-  "[boot] mounting knowledge graph (21 nodes / 28 edges) … OK",
-  "[boot] replaying git history (8 commits) … OK",
+  `[boot] mounting knowledge graph (${NODES.length} nodes / ${EDGES.length} edges) … OK`,
+  `[boot] replaying git history (${COMMITS.length} commits) … OK`,
   "[boot] intent router online — no API key required",
   "",
   `Welcome. I'm the agent guarding ${PROFILE.name}'s portfolio.`,

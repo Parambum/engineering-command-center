@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { GitCommit, FileDiff, Trophy, FlaskConical, Rocket, TrendingUp, Users, GraduationCap } from "lucide-react";
+import { GitCommit, FileDiff, Trophy, FlaskConical, Rocket, TrendingUp, Users, GraduationCap, HeartHandshake } from "lucide-react";
 import { COMMITS, PROFILE, type Commit, type CommitType } from "@/lib/data";
 import { useCommandCenter } from "@/components/CommandCenterProvider";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ const TYPE_META: Record<
   win: { color: "text-amber-soft", icon: Trophy },
   perf: { color: "text-cyan-neon", icon: TrendingUp },
   mentor: { color: "text-violet-soft", icon: Users },
+  community: { color: "text-rose-300", icon: HeartHandshake },
   init: { color: "text-pink-400", icon: GraduationCap },
 };
 
@@ -66,8 +67,10 @@ export default function GitTimeline() {
     if (expandedCommit === c.hash) {
       expandCommit(null, "timeline");
     } else {
-      // focusNode also expands the commit + logs + fires the trace
+      // focusNode lights the graph + logs + fires the trace; expandCommit
+      // wins afterwards so the clicked hash (not the node's default) opens
       focusNode(c.nodeId, "timeline");
+      expandCommit(c.hash, "timeline");
     }
   };
 

@@ -8,12 +8,19 @@ export const PROFILE = {
   handle: "parambum",
   role: "ML Research Analyst · Full-Stack & Agentic AI Engineer",
   email: "adityaparam2006@gmail.com",
+  phone: "+91 9137601844",
   github: "https://github.com/Parambum",
   linkedin: "https://www.linkedin.com/in/aditya-parameswar-339418276/",
   education: {
     school: "Mukesh Patel School of Technology Management and Engineering",
-    program: "B.Tech Computer Science",
+    program: "B.Tech Computer Science (Aug 2022 – Present) · Mumbai",
     cgpa: "3.65",
+    prior: "Arya Vidya Mandir — X grade ICSE, 96 percentile",
+  },
+  skills: {
+    languages: ["Java", "Python", "C/C++", "SQL (Postgres)", "JavaScript", "HTML/CSS", "R"],
+    frameworks: ["React", "Next.js", "Node.js", "Flask", "FastAPI", "WordPress"],
+    tools: ["Pandas", "NumPy", "Matplotlib", "LangChain", "MongoDB", "Git"],
   },
 } as const;
 
@@ -51,8 +58,9 @@ export const NODES: GraphNode[] = [
     x: 0.5,
     y: 0.9,
     details: [
-      "Mukesh Patel School of Technology Management and Engineering",
-      "B.Tech Computer Science — CGPA 3.65",
+      "Mukesh Patel School of Technology Management and Engineering, Mumbai",
+      "B.Tech Computer Science (Aug 2022 – Present) — CGPA 3.65",
+      "Prior: Arya Vidya Mandir — X grade ICSE, 96 percentile",
     ],
     commitHash: "a0d17ya",
   },
@@ -78,9 +86,10 @@ export const NODES: GraphNode[] = [
     x: 0.3,
     y: 0.78,
     details: [
-      "Technical Intern (May 2025 – July 2025)",
-      "Optimized on-page content & metadata",
-      "Drove a 10% increase in organic traffic",
+      "Technical Intern (May 2025 – July 2025) · Mumbai",
+      "Optimized on-page content & metadata for high-priority keywords",
+      "+10% organic search traffic within 2 months",
+      "Keyword research & competitor analysis → top-10 rankings",
     ],
     commitHash: "5e0b00st",
   },
@@ -91,11 +100,37 @@ export const NODES: GraphNode[] = [
     x: 0.18,
     y: 0.6,
     details: [
-      "Technical Executive",
-      "Mentored a cohort of 50 students",
-      "Curriculum: HTML5, CSS3, React fundamentals",
+      "Technical Executive (July 2024 – July 2025)",
+      "Conducted frontend development workshops",
+      "Taught HTML5, CSS3 & React fundamentals to a cohort of 50 students",
     ],
     commitHash: "m3nt0r50",
+  },
+  {
+    id: "gdg",
+    label: "GDG MPSTME",
+    type: "experience",
+    x: 0.4,
+    y: 0.68,
+    details: [
+      "Business Development Executive (Aug 2025 – Present)",
+      "Secured strategic sponsorships with local tech firms",
+      "Directed outreach to onboard industry experts & expand community reach",
+    ],
+    commitHash: "9d9biz0",
+  },
+  {
+    id: "genesis",
+    label: "Genesis Foundation",
+    type: "experience",
+    x: 0.07,
+    y: 0.92,
+    details: [
+      "Volunteer — Genesis Worldwide Foundation (Jun 2025 – Aug 2025)",
+      "Managed logistics for health check-up camps",
+      "Daily administrative support for 25+ residents",
+    ],
+    commitHash: "v0lunt33r",
   },
 
   // ---- projects ----
@@ -138,7 +173,7 @@ export const NODES: GraphNode[] = [
     details: [
       "Winner — IEEE HackXplore (Nov 2025)",
       "Multi-LLM RAG system for emotional intelligence analysis",
-      "Built with LangChain",
+      "Orchestrated with LangChain · full-stack interface in Next.js",
     ],
     commitHash: "w1nhackx",
   },
@@ -173,6 +208,7 @@ export const EDGES: GraphEdge[] = [
   { from: "mpstme", to: "ml-research" },
   { from: "mpstme", to: "acm" },
   { from: "mpstme", to: "wecare" },
+  { from: "mpstme", to: "gdg" },
 
   // RAAI dependencies
   { from: "nextjs", to: "raai" },
@@ -196,6 +232,7 @@ export const EDGES: GraphEdge[] = [
   { from: "langchain", to: "hackxplore" },
   { from: "rag", to: "hackxplore" },
   { from: "raai", to: "hackxplore" },
+  { from: "nextjs", to: "hackxplore" },
   { from: "rag", to: "iete-ace" },
 
   // wecare + acm
@@ -211,7 +248,14 @@ export const EDGES: GraphEdge[] = [
   { from: "langchain", to: "rag" },
 ];
 
-export type CommitType = "research" | "feat" | "win" | "perf" | "mentor" | "init";
+export type CommitType =
+  | "research"
+  | "feat"
+  | "win"
+  | "perf"
+  | "mentor"
+  | "community"
+  | "init";
 
 export interface Commit {
   hash: string;
@@ -286,6 +330,7 @@ export const COMMITS: Commit[] = [
       after: [
         "Engineered a multi-LLM RAG system orchestrated with LangChain",
         "Specialized models cooperate on emotional intelligence analysis",
+        "Architected the full-stack interface with Next.js",
         "Result: winner, IEEE HackXplore 2025",
       ],
     },
@@ -328,6 +373,44 @@ export const COMMITS: Commit[] = [
     },
   },
   {
+    hash: "9d9biz0",
+    type: "community",
+    title: "chore(growth): business development @ GDG MPSTME",
+    dateLabel: "Aug 2025 — Present",
+    nodeId: "gdg",
+    tags: ["GDG", "Sponsorships", "Outreach"],
+    diff: {
+      file: "gdg/partnerships.md",
+      before: [
+        "Community events limited by sponsorship pipeline",
+        "Few industry experts engaged with the chapter",
+      ],
+      after: [
+        "Secured strategic sponsorships with local tech firms",
+        "Directed outreach onboarding industry experts",
+        "Expanded community reach to local hubs",
+      ],
+    },
+  },
+  {
+    hash: "v0lunt33r",
+    type: "community",
+    title: "chore(impact): volunteer @ Genesis Worldwide Foundation",
+    dateLabel: "Jun 2025 — Aug 2025",
+    nodeId: "genesis",
+    tags: ["Volunteering", "Logistics"],
+    diff: {
+      file: "genesis/camps.md",
+      before: [
+        "Health check-up camps needed structured logistics support",
+      ],
+      after: [
+        "Managed camp logistics and daily administrative support",
+        "Sustained a structured environment for 25+ residents",
+      ],
+    },
+  },
+  {
     hash: "5e0b00st",
     type: "perf",
     title: "perf(seo): +10% organic traffic @ WeCare Digital",
@@ -337,12 +420,13 @@ export const COMMITS: Commit[] = [
     diff: {
       file: "onpage_optimization.md",
       before: [
-        "On-page content & metadata unoptimized for search intent",
-        "Organic acquisition underperforming",
+        "On-page content & metadata unoptimized for high-priority keywords",
+        "Organic acquisition underperforming; content gaps unmapped",
       ],
       after: [
         "Systematically optimized on-page content and metadata",
-        "Measured outcome: +10% organic traffic",
+        "Keyword research + competitor analysis → top-10 rankings",
+        "Measured outcome: +10% organic traffic within 2 months",
       ],
     },
   },
@@ -350,7 +434,7 @@ export const COMMITS: Commit[] = [
     hash: "m3nt0r50",
     type: "mentor",
     title: "docs(mentorship): trained 50-student cohort @ ACM MPSTME",
-    dateLabel: "ACM MPSTME",
+    dateLabel: "July 2024 — July 2025",
     nodeId: "acm",
     tags: ["HTML5", "CSS3", "React", "Teaching"],
     diff: {
@@ -368,17 +452,17 @@ export const COMMITS: Commit[] = [
     hash: "a0d17ya",
     type: "init",
     title: "init: B.Tech Computer Science @ MPSTME",
-    dateLabel: "Genesis",
+    dateLabel: "Aug 2022 — Present",
     nodeId: "mpstme",
     tags: ["CS Major", "CGPA 3.65"],
     diff: {
       file: "README.md",
       before: [
-        "Empty repository",
+        "Arya Vidya Mandir — X grade ICSE, 96 percentile",
       ],
       after: [
         "Enrolled: Mukesh Patel School of Technology Management & Engineering",
-        "Computer Science major — CGPA 3.65",
+        "Computer Science major — CGPA 3.65 · Mumbai",
       ],
     },
   },

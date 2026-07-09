@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Mail, Cpu } from "lucide-react";
+import Image from "next/image";
+import { Mail } from "lucide-react";
 import { PROFILE } from "@/lib/data";
 import { useCommandCenter } from "@/components/CommandCenterProvider";
 import { cn } from "@/lib/utils";
@@ -26,7 +27,16 @@ export default function StatusBar() {
 
   return (
     <header className="glass z-20 flex items-center gap-3 border-x-0 border-t-0 px-4 py-2.5">
-      <Cpu size={15} className="text-electric" />
+      <span className="relative inline-block h-8 w-8 shrink-0 overflow-hidden rounded-full border border-electric/50 shadow-[0_0_10px_rgba(56,189,248,0.35)]">
+        <Image
+          src="https://avatars.githubusercontent.com/Parambum?size=96"
+          alt="Aditya Parameswar"
+          fill
+          sizes="32px"
+          className="object-cover"
+          priority
+        />
+      </span>
       <div className="leading-tight">
         <h1 className="text-[13px] font-semibold tracking-wide text-slate-100">
           {PROFILE.name}

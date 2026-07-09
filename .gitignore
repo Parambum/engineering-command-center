@@ -43,3 +43,6 @@ next-env.d.ts
 
 # local agent tooling (flip if you want skills shared with collaborators)
 .claude/
+
+# netlify cli state
+.netlify/

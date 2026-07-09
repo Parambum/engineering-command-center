@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-void: #04060b;
+  --color-abyss: #070b14;
+  --color-panel: #0a1020;
+  --color-line: #16233b;
+  --color-line-bright: #24395e;
+  --color-electric: #38bdf8;
+  --color-cyan-neon: #22d3ee;
+  --color-neon: #34f5a4;
+  --color-violet-soft: #a78bfa;
+  --color-amber-soft: #fbbf24;
+  --color-blood: #f87171;
+  --color-dim: #64748b;
+  --color-ghost: #94a3b8;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  background: #04060b;
+  color: #cbd5e1;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+::selection {
+  background: rgba(56, 189, 248, 0.35);
+  color: #f0f9ff;
+}
+
+/* ---- panel chrome ---- */
+.glass {
+  background: rgba(8, 13, 26, 0.82);
+  border: 1px solid rgba(36, 57, 94, 0.6);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 0 1px rgba(4, 6, 11, 0.4), 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+.panel-title {
+  letter-spacing: 0.18em;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+/* ---- background grid ---- */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(36, 57, 94, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(36, 57, 94, 0.16) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.015) 0px,
+    rgba(255, 255, 255, 0.015) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* ---- glow helpers ---- */
+.glow-green {
+  text-shadow: 0 0 12px rgba(52, 245, 164, 0.55);
+}
+.glow-blue {
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.55);
+}
+
+/* ---- terminal cursor ---- */
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.cursor-blink {
+  animation: blink 1.05s steps(1) infinite;
+}
+
+/* ---- status pulse ---- */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(52, 245, 164, 0.9); }
+  50% { opacity: 0.45; box-shadow: 0 0 2px rgba(52, 245, 164, 0.4); }
+}
+.pulse-dot {
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+
+/* ---- scrollbars ---- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1e2f4d transparent;
+}
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #1e2f4d;
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}

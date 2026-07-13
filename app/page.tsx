@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Share2, GitCommit, TerminalSquare } from "lucide-react";
 import { CommandCenterProvider } from "@/components/CommandCenterProvider";
 import KnowledgeGraph from "@/components/KnowledgeGraph";
@@ -8,6 +9,9 @@ import GitTimeline from "@/components/GitTimeline";
 import Terminal from "@/components/Terminal";
 import NodeInspector from "@/components/NodeInspector";
 import StatusBar from "@/components/StatusBar";
+import BootScreen from "@/components/BootScreen";
+import BackgroundFX from "@/components/fx/BackgroundFX";
+import GlowPanel from "@/components/fx/GlowPanel";
 import { NODE_COLORS, NODE_TYPE_LABEL, type NodeType } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +22,12 @@ const TABS: { id: Tab; label: string; icon: React.ComponentType<{ size?: number 
   { id: "graph", label: "graph", icon: Share2 },
   { id: "terminal", label: "terminal", icon: TerminalSquare },
 ];
+
+const panelIn = (delay: number) => ({
+  initial: { opacity: 0, y: 26, scale: 0.985 },
+  animate: { opacity: 1, y: 0, scale: 1 },
+  transition: { duration: 0.55, delay, ease: [0.21, 0.65, 0.32, 1] as const },
+});
 
 function Legend() {
   return (
@@ -37,40 +47,64 @@ function Legend() {
 
 export default function Home() {
   const [tab, setTab] = useState<Tab>("graph");
+  const [booted, setBooted] = useState(false);
 
   return (
     <CommandCenterProvider>
+      <BootScreen onDone={() => setBooted(true)} />
+
       <div className="bg-grid scanlines relative flex h-dvh flex-col bg-void">
         <StatusBar />
 
         {/* ================= desktop: layered dashboard ================= */}
         <main className="relative hidden flex-1 overflow-hidden lg:block">
+          <BackgroundFX />
           <KnowledgeGraph />
 
-          <div className="pointer-events-none absolute inset-0 flex gap-4 p-4">
-            {/* left — git timeline */}
-            <section className="glass pointer-events-auto w-[30rem] shrink-0 overflow-hidden rounded-lg">
-              <GitTimeline />
-            </section>
+          {booted && (
+            <div className="pointer-events-none absolute inset-0 flex gap-4 p-4">
+              {/* left — git timeline */}
+              <motion.section
+                {...panelIn(0.05)}
+                className="pointer-events-auto w-[30rem] shrink-0"
+              >
+                <GlowPanel className="h-full">
+                  <div className="glass h-full overflow-hidden rounded-lg">
+                    <GitTimeline />
+                  </div>
+                </GlowPanel>
+              </motion.section>
 
-            {/* right column — legend, inspector, terminal */}
-            <div className="flex min-w-0 flex-1 flex-col items-end justify-between gap-3">
-              <div className="flex w-full items-start justify-between gap-3">
-                <Legend />
-                <div className="pointer-events-auto w-[24rem] max-w-full">
-                  <NodeInspector />
+              {/* right column — legend, inspector, terminal */}
+              <div className="flex min-w-0 flex-1 flex-col items-end justify-between gap-3">
+                <div className="flex w-full items-start justify-between gap-3">
+                  <motion.div {...panelIn(0.28)}>
+                    <Legend />
+                  </motion.div>
+                  <motion.div
+                    {...panelIn(0.2)}
+                    className="pointer-events-auto w-[24rem] max-w-full"
+                  >
+                    <NodeInspector />
+                  </motion.div>
                 </div>
-              </div>
-              <div className="pointer-events-auto h-[42%] w-[36rem] max-w-full">
-                <Terminal />
+                <motion.div
+                  {...panelIn(0.12)}
+                  className="pointer-events-auto h-[42%] w-[36rem] max-w-full"
+                >
+                  <GlowPanel className="h-full">
+                    <Terminal />
+                  </GlowPanel>
+                </motion.div>
               </div>
             </div>
-          </div>
+          )}
         </main>
 
         {/* ================= mobile: tabbed panels ================= */}
         <main className="relative flex-1 overflow-hidden lg:hidden">
           <div className={cn("absolute inset-0", tab !== "graph" && "invisible")}>
+            <BackgroundFX />
             <KnowledgeGraph />
             <div className="pointer-events-none absolute inset-x-3 top-3 space-y-2">
               <Legend />
@@ -80,9 +114,14 @@ export default function Home() {
             </div>
           </div>
           {tab === "timeline" && (
-            <div className="glass absolute inset-3 overflow-hidden rounded-lg">
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="glass absolute inset-3 overflow-hidden rounded-lg"
+            >
               <GitTimeline />
-            </div>
+            </motion.div>
           )}
           <div className={cn("absolute inset-3", tab !== "terminal" && "hidden")}>
             <Terminal />
@@ -96,10 +135,17 @@ export default function Home() {
               key={id}
               onClick={() => setTab(id)}
               className={cn(
-                "flex flex-1 items-center justify-center gap-2 py-3 text-[10px] tracking-widest uppercase transition-colors",
+                "relative flex flex-1 items-center justify-center gap-2 py-3 text-[10px] tracking-widest uppercase transition-colors",
                 tab === id ? "text-neon" : "text-dim",
               )}
             >
+              {tab === id && (
+                <motion.span
+                  layoutId="tab-indicator"
+                  className="absolute inset-x-6 top-0 h-[2px] rounded-full bg-gradient-to-r from-electric to-neon shadow-[0_0_8px_rgba(52,245,164,0.8)]"
+                  transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                />
+              )}
               <Icon size={13} />
               {label}
             </button>

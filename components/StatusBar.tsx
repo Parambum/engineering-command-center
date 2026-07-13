@@ -5,7 +5,16 @@ import Image from "next/image";
 import { Mail } from "lucide-react";
 import { PROFILE } from "@/lib/data";
 import { useCommandCenter } from "@/components/CommandCenterProvider";
+import ScrambleText from "@/components/fx/ScrambleText";
+import FlipWords from "@/components/fx/FlipWords";
 import { cn } from "@/lib/utils";
+
+const ROLES = [
+  "ML Research Analyst",
+  "Agentic AI Engineer",
+  "2× Hackathon Winner",
+  "Full-Stack Developer",
+];
 
 export default function StatusBar() {
   const { llmMode } = useCommandCenter();
@@ -26,7 +35,8 @@ export default function StatusBar() {
   }, []);
 
   return (
-    <header className="glass z-20 flex items-center gap-3 border-x-0 border-t-0 px-4 py-2.5">
+    <header className="glass relative z-20 flex items-center gap-3 border-x-0 border-t-0 px-4 py-2.5">
+      <span className="shimmer-line absolute inset-x-0 bottom-0 h-px" />
       <span className="relative inline-block h-8 w-8 shrink-0 overflow-hidden rounded-full border border-electric/50 shadow-[0_0_10px_rgba(56,189,248,0.35)]">
         <Image
           src="https://avatars.githubusercontent.com/Parambum?size=96"
@@ -39,12 +49,14 @@ export default function StatusBar() {
       </span>
       <div className="leading-tight">
         <h1 className="text-[13px] font-semibold tracking-wide text-slate-100">
-          {PROFILE.name}
+          <ScrambleText text={PROFILE.name} delay={250} />
           <span className="ml-2 hidden text-[10px] font-normal tracking-[0.2em] text-dim uppercase sm:inline">
             engineering command center
           </span>
         </h1>
-        <p className="hidden text-[10px] text-ghost md:block">{PROFILE.role}</p>
+        <p className="hidden text-[10px] text-ghost md:block">
+          <FlipWords words={ROLES} className="text-electric" />
+        </p>
       </div>
 
       <div className="ml-auto flex items-center gap-3">

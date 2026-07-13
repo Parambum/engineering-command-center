@@ -89,16 +89,19 @@ export default function GitTimeline() {
         <div className="absolute top-3 bottom-3 left-[27px] w-px bg-line" />
 
         <div className="space-y-1">
-          {COMMITS.map((c) => {
+          {COMMITS.map((c, idx) => {
             const meta = TYPE_META[c.type];
             const Icon = meta.icon;
             const open = expandedCommit === c.hash;
             return (
-              <div
+              <motion.div
                 key={c.hash}
                 ref={(el) => {
                   if (el) rowRefs.current.set(c.hash, el);
                 }}
+                initial={{ opacity: 0, x: -18 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.15 + idx * 0.07, ease: "easeOut" }}
                 className="relative pl-8"
               >
                 {/* dot on rail */}
@@ -153,7 +156,7 @@ export default function GitTimeline() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
             );
           })}
         </div>

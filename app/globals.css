@@ -98,6 +98,180 @@ body {
   animation: pulse-dot 1.8s ease-in-out infinite;
 }
 
+/* ================= FX layer (Aceternity/ReactBits-style) ================= */
+
+/* ---- aurora blobs ---- */
+.aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.22;
+  will-change: transform;
+}
+.aurora-a {
+  width: 55vw;
+  height: 45vh;
+  left: -12%;
+  top: -18%;
+  background: radial-gradient(ellipse, #0e7490 0%, transparent 70%);
+  animation: aurora-drift 26s ease-in-out infinite alternate;
+}
+.aurora-b {
+  width: 45vw;
+  height: 40vh;
+  right: -10%;
+  top: 8%;
+  background: radial-gradient(ellipse, #1e3a8a 0%, transparent 70%);
+  animation: aurora-drift 32s ease-in-out infinite alternate-reverse;
+}
+.aurora-c {
+  width: 50vw;
+  height: 38vh;
+  left: 25%;
+  bottom: -22%;
+  background: radial-gradient(ellipse, #065f46 0%, transparent 70%);
+  animation: aurora-drift 38s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(6%, 4%, 0) scale(1.12); }
+  100% { transform: translate3d(-5%, -3%, 0) scale(0.95); }
+}
+
+/* ---- entrance spotlight ---- */
+.spotlight {
+  position: absolute;
+  top: -30%;
+  left: 5%;
+  width: 70vw;
+  height: 90vh;
+  background: radial-gradient(
+    ellipse 50% 45% at 50% 40%,
+    rgba(125, 211, 252, 0.12),
+    transparent 75%
+  );
+  transform: rotate(-12deg);
+  opacity: 0;
+  animation: spotlight-enter 1.6s ease-out 0.4s forwards;
+  will-change: opacity, transform;
+}
+@keyframes spotlight-enter {
+  from { opacity: 0; transform: rotate(-12deg) translateY(-6%); }
+  to { opacity: 1; transform: rotate(-12deg) translateY(0); }
+}
+
+/* ---- twinkling stars ---- */
+.star {
+  position: absolute;
+  border-radius: 9999px;
+  background: #7dd3fc;
+  opacity: 0.25;
+  animation: star-twinkle 3.4s ease-in-out infinite;
+}
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.75; }
+}
+
+/* ---- meteors ---- */
+.meteor {
+  position: absolute;
+  top: -8%;
+  width: 2px;
+  height: 2px;
+  border-radius: 9999px;
+  background: #e0f2fe;
+  box-shadow: 0 0 8px rgba(125, 211, 252, 0.9);
+  transform: rotate(215deg);
+  animation: meteor-fall linear infinite;
+  opacity: 0;
+}
+.meteor::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 1px;
+  width: 90px;
+  height: 1px;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, rgba(125, 211, 252, 0.7), transparent);
+}
+@keyframes meteor-fall {
+  0% { opacity: 0; transform: rotate(215deg) translateX(0); }
+  6% { opacity: 1; }
+  55% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(215deg) translateX(-90vh); }
+}
+
+/* ---- glow panel: orbiting border arc ---- */
+@property --orbit {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.glow-panel {
+  position: relative;
+  border-radius: 0.5rem;
+}
+.glow-panel-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--orbit),
+    transparent 0deg,
+    rgba(56, 189, 248, 0.7) 12deg,
+    rgba(52, 245, 164, 0.5) 28deg,
+    transparent 60deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: orbit-spin 7s linear infinite;
+  pointer-events: none;
+}
+@keyframes orbit-spin {
+  to { --orbit: 360deg; }
+}
+
+/* ---- shimmer underline (status bar) ---- */
+.shimmer-line {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(56, 189, 248, 0.55),
+    rgba(52, 245, 164, 0.55),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer-slide 4.5s linear infinite;
+}
+@keyframes shimmer-slide {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* ---- reduced motion: kill ambient animation, keep content ---- */
+@media (prefers-reduced-motion: reduce) {
+  .aurora,
+  .meteor,
+  .star,
+  .spotlight,
+  .glow-panel-border::before,
+  .shimmer-line,
+  .pulse-dot,
+  .cursor-blink {
+    animation: none !important;
+  }
+  .meteor { display: none; }
+  .spotlight { opacity: 1; }
+}
+
 /* ---- scrollbars ---- */
 * {
   scrollbar-width: thin;

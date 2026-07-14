@@ -26,6 +26,8 @@ export interface LogEvent {
 
 export type EventSource = "terminal" | "graph" | "timeline" | "inspector";
 
+export type PanelId = "timeline" | "terminal";
+
 interface TraceSignal {
   nodeId: string;
   ts: number;
@@ -37,6 +39,9 @@ interface CommandCenterState {
   trace: TraceSignal | null;
   expandedCommit: string | null;
   llmMode: boolean;
+  panelOpen: Record<PanelId, boolean>;
+  /** logs that arrived while the terminal panel was minimized */
+  unseenLogs: number;
 }
 
 interface CommandCenterApi extends CommandCenterState {
@@ -47,6 +52,7 @@ interface CommandCenterApi extends CommandCenterState {
   setLlmMode: (on: boolean) => void;
   log: (lines: string[], tone?: LogTone) => void;
   celebrate: () => void;
+  togglePanel: (id: PanelId, open?: boolean) => void;
   /** terminal registers here to receive logs pushed by other panels */
   subscribeLogs: (fn: (e: LogEvent) => void) => () => void;
 }
@@ -65,11 +71,29 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
   const [trace, setTrace] = useState<TraceSignal | null>(null);
   const [expandedCommit, setExpandedCommit] = useState<string | null>(null);
   const [llmMode, setLlmMode] = useState(false);
+  const [panelOpen, setPanelOpen] = useState<Record<PanelId, boolean>>({
+    timeline: true,
+    terminal: true,
+  });
+  const [unseenLogs, setUnseenLogs] = useState(0);
+
+  // ref mirror so log() sees the live panel state without re-subscribing
+  const panelOpenRef = useRef(panelOpen);
+  panelOpenRef.current = panelOpen;
 
   const logListeners = useRef<Set<(e: LogEvent) => void>>(new Set());
 
   const log = useCallback((lines: string[], tone: LogTone = "system") => {
     logListeners.current.forEach((fn) => fn({ lines, tone }));
+    if (!panelOpenRef.current.terminal) setUnseenLogs((n) => n + 1);
+  }, []);
+
+  const togglePanel = useCallback((id: PanelId, open?: boolean) => {
+    setPanelOpen((prev) => {
+      const next = open ?? !prev[id];
+      if (id === "terminal" && next) setUnseenLogs(0);
+      return { ...prev, [id]: next };
+    });
   }, []);
 
   const subscribeLogs = useCallback((fn: (e: LogEvent) => void) => {
@@ -151,6 +175,8 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
       trace,
       expandedCommit,
       llmMode,
+      panelOpen,
+      unseenLogs,
       focusNode,
       clearFocus,
       runTrace,
@@ -158,6 +184,7 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
       setLlmMode,
       log,
       celebrate,
+      togglePanel,
       subscribeLogs,
     }),
     [
@@ -166,12 +193,15 @@ export function CommandCenterProvider({ children }: { children: ReactNode }) {
       trace,
       expandedCommit,
       llmMode,
+      panelOpen,
+      unseenLogs,
       focusNode,
       clearFocus,
       runTrace,
       expandCommit,
       log,
       celebrate,
+      togglePanel,
       subscribeLogs,
     ],
   );

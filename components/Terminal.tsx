@@ -44,7 +44,7 @@ function lineClass(line: string, tone: LogTone): string {
   }
 }
 
-export default function Terminal() {
+export default function Terminal({ onClose }: { onClose?: () => void }) {
   const { subscribeLogs, focusNode, celebrate, llmMode, setLlmMode } =
     useCommandCenter();
 
@@ -193,9 +193,25 @@ export default function Terminal() {
       className="glass flex h-full flex-col overflow-hidden rounded-lg"
       onClick={() => inputRef.current?.focus()}
     >
-      {/* title bar */}
+      {/* title bar — the red traffic light actually minimizes the window */}
       <div className="flex items-center gap-2 border-b border-line px-3 py-2">
-        <span className="h-2.5 w-2.5 rounded-full bg-blood/80" />
+        {onClose ? (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            title="minimize terminal (ctrl+`)"
+            aria-label="minimize terminal"
+            className="group flex h-2.5 w-2.5 items-center justify-center rounded-full bg-blood/80 transition-shadow hover:bg-blood hover:shadow-[0_0_9px_rgba(248,113,113,0.9)]"
+          >
+            <span className="text-[7px] leading-none font-bold text-void opacity-0 transition-opacity group-hover:opacity-100">
+              ×
+            </span>
+          </button>
+        ) : (
+          <span className="h-2.5 w-2.5 rounded-full bg-blood/80" />
+        )}
         <span className="h-2.5 w-2.5 rounded-full bg-amber-soft/80" />
         <span className="h-2.5 w-2.5 rounded-full bg-neon/80" />
         <TerminalSquare size={13} className="ml-2 text-electric" />

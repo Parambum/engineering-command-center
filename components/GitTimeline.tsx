@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { GitCommit, FileDiff, Trophy, FlaskConical, Rocket, TrendingUp, Users, GraduationCap, HeartHandshake } from "lucide-react";
+import { GitCommit, FileDiff, Trophy, FlaskConical, Rocket, TrendingUp, Users, GraduationCap, HeartHandshake, Minimize2 } from "lucide-react";
 import { COMMITS, PROFILE, type Commit, type CommitType } from "@/lib/data";
 import { useCommandCenter } from "@/components/CommandCenterProvider";
 import { cn } from "@/lib/utils";
@@ -52,7 +52,7 @@ function DiffBlock({ commit }: { commit: Commit }) {
   );
 }
 
-export default function GitTimeline() {
+export default function GitTimeline({ onClose }: { onClose?: () => void }) {
   const { expandedCommit, focusNode, expandCommit } = useCommandCenter();
   const rowRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
@@ -82,6 +82,16 @@ export default function GitTimeline() {
           git log --graph · branch: <span className="text-neon">career/main</span>
         </span>
         <span className="ml-auto text-[10px] text-dim">{COMMITS.length} commits</span>
+        {onClose && (
+          <button
+            onClick={onClose}
+            title="minimize panel (ctrl+b)"
+            aria-label="minimize git log"
+            className="ml-1 rounded p-0.5 text-dim transition-colors hover:bg-panel hover:text-blood"
+          >
+            <Minimize2 size={12} />
+          </button>
+        )}
       </div>
 
       <div className="relative flex-1 overflow-y-auto px-4 py-3">

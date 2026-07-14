@@ -33,6 +33,9 @@ const HELP: string[] = [
   "  /llm on|off    route free-text to live LLM (Groq)",
   "  /clear         wipe terminal buffer",
   "",
+  "  ctrl+`         minimize/restore this terminal",
+  "  ctrl+b         minimize/restore the git log",
+  "",
   "or just talk to me: “show hackathon wins”, “what is RAAI?”…",
 ];
 

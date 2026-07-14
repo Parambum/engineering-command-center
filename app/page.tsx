@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, type Variants } from "framer-motion";
 import { Share2, GitCommit, TerminalSquare } from "lucide-react";
-import { CommandCenterProvider } from "@/components/CommandCenterProvider";
+import {
+  CommandCenterProvider,
+  useCommandCenter,
+} from "@/components/CommandCenterProvider";
 import KnowledgeGraph from "@/components/KnowledgeGraph";
 import GitTimeline from "@/components/GitTimeline";
 import Terminal from "@/components/Terminal";
@@ -12,6 +15,7 @@ import StatusBar from "@/components/StatusBar";
 import BootScreen from "@/components/BootScreen";
 import BackgroundFX from "@/components/fx/BackgroundFX";
 import GlowPanel from "@/components/fx/GlowPanel";
+import Dock from "@/components/fx/Dock";
 import { NODE_COLORS, NODE_TYPE_LABEL, type NodeType } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +33,48 @@ const panelIn = (delay: number) => ({
   transition: { duration: 0.55, delay, ease: [0.21, 0.65, 0.32, 1] as const },
 });
 
+// ---- minimize/restore choreography (ReactBits-style springy blur reveals,
+// panels collapse toward the dock like an OS window minimize) ----
+const timelineVariants: Variants = {
+  open: {
+    width: "30rem",
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    visibility: "visible",
+    transition: { type: "spring", stiffness: 230, damping: 28 },
+  },
+  closed: {
+    width: 0,
+    opacity: 0,
+    x: -90,
+    scale: 0.85,
+    filter: "blur(10px)",
+    transition: { duration: 0.34, ease: [0.4, 0, 0.2, 1] },
+    transitionEnd: { visibility: "hidden" },
+  },
+};
+
+const terminalVariants: Variants = {
+  open: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    visibility: "visible",
+    transition: { type: "spring", stiffness: 240, damping: 23 },
+  },
+  closed: {
+    opacity: 0,
+    y: 150,
+    scale: 0.6,
+    filter: "blur(12px)",
+    transition: { duration: 0.3, ease: "easeIn" },
+    transitionEnd: { visibility: "hidden" },
+  },
+};
+
 function Legend() {
   return (
     <div className="glass pointer-events-auto flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg px-3 py-1.5">
@@ -45,12 +91,29 @@ function Legend() {
   );
 }
 
-export default function Home() {
+function Workspace() {
   const [tab, setTab] = useState<Tab>("graph");
   const [booted, setBooted] = useState(false);
+  const { panelOpen, togglePanel } = useCommandCenter();
+
+  // keyboard shortcuts: ctrl+` terminal · ctrl+b git log (VS Code muscle memory)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key === "`") {
+        e.preventDefault();
+        togglePanel("terminal");
+      } else if (e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        togglePanel("timeline");
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [togglePanel]);
 
   return (
-    <CommandCenterProvider>
+    <>
       <BootScreen onDone={() => setBooted(true)} />
 
       <div className="bg-grid scanlines relative flex h-dvh flex-col bg-void">
@@ -63,16 +126,21 @@ export default function Home() {
 
           {booted && (
             <div className="pointer-events-none absolute inset-0 flex gap-4 p-4">
-              {/* left — git timeline */}
+              {/* left — git timeline (collapsible) */}
               <motion.section
-                {...panelIn(0.05)}
-                className="pointer-events-auto w-[30rem] shrink-0"
+                initial={false}
+                animate={panelOpen.timeline ? "open" : "closed"}
+                variants={timelineVariants}
+                style={{ transformOrigin: "bottom left" }}
+                className="pointer-events-auto shrink-0"
               >
-                <GlowPanel className="h-full">
-                  <div className="glass h-full overflow-hidden rounded-lg">
-                    <GitTimeline />
-                  </div>
-                </GlowPanel>
+                <motion.div {...panelIn(0.05)} className="h-full w-[30rem]">
+                  <GlowPanel className="h-full">
+                    <div className="glass h-full overflow-hidden rounded-lg">
+                      <GitTimeline onClose={() => togglePanel("timeline", false)} />
+                    </div>
+                  </GlowPanel>
+                </motion.div>
               </motion.section>
 
               {/* right column — legend, inspector, terminal */}
@@ -88,17 +156,26 @@ export default function Home() {
                     <NodeInspector />
                   </motion.div>
                 </div>
+
+                {/* terminal (collapsible — minimizes toward the dock) */}
                 <motion.div
-                  {...panelIn(0.12)}
+                  initial={false}
+                  animate={panelOpen.terminal ? "open" : "closed"}
+                  variants={terminalVariants}
+                  style={{ transformOrigin: "bottom center" }}
                   className="pointer-events-auto h-[42%] w-[36rem] max-w-full"
                 >
-                  <GlowPanel className="h-full">
-                    <Terminal />
-                  </GlowPanel>
+                  <motion.div {...panelIn(0.12)} className="h-full">
+                    <GlowPanel className="h-full">
+                      <Terminal onClose={() => togglePanel("terminal", false)} />
+                    </GlowPanel>
+                  </motion.div>
                 </motion.div>
               </div>
             </div>
           )}
+
+          {booted && <Dock />}
         </main>
 
         {/* ================= mobile: tabbed panels ================= */}
@@ -152,6 +229,14 @@ export default function Home() {
           ))}
         </nav>
       </div>
+    </>
+  );
+}
+
+export default function Home() {
+  return (
+    <CommandCenterProvider>
+      <Workspace />
     </CommandCenterProvider>
   );
 }

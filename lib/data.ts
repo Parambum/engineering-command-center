@@ -27,6 +27,7 @@ export const PROFILE = {
 export type NodeType =
   | "skill"
   | "experience"
+  | "internship"
   | "project"
   | "achievement"
   | "education";
@@ -79,10 +80,26 @@ export const NODES: GraphNode[] = [
     ],
     commitHash: "f1n6er9",
   },
+  // ---- internships ----
+  {
+    id: "zetheta",
+    label: "ZeTheta Algorithms",
+    type: "internship",
+    x: 0.26,
+    y: 0.92,
+    details: [
+      "AI Intern — ZeTheta Algorithms Pvt Ltd (Current) · Mumbai",
+      "FinTech/EduTech startup building AI tools for portfolio management",
+      "Built Portfolio Tetris — gamified skill assessment for WorkBridge by ZeTheta",
+      "0–1000 scoring engine: Sharpe-style returns, HHI diversification, liquidity",
+      "Second game — 7 Word Pitch — in development",
+    ],
+    commitHash: "ze7he7a1",
+  },
   {
     id: "wecare",
     label: "WeCare Digital",
-    type: "experience",
+    type: "internship",
     x: 0.3,
     y: 0.78,
     details: [
@@ -209,6 +226,8 @@ export const EDGES: GraphEdge[] = [
   { from: "mpstme", to: "acm" },
   { from: "mpstme", to: "wecare" },
   { from: "mpstme", to: "gdg" },
+  { from: "mpstme", to: "zetheta" },
+  { from: "webfund", to: "zetheta" },
 
   // RAAI dependencies
   { from: "nextjs", to: "raai" },
@@ -273,6 +292,31 @@ export interface Commit {
 
 /** newest first — rendered top-down like `git log` */
 export const COMMITS: Commit[] = [
+  {
+    hash: "ze7he7a1",
+    type: "feat",
+    title: "feat(intern): AI Intern @ ZeTheta Algorithms — gamified fintech",
+    dateLabel: "Present",
+    nodeId: "zetheta",
+    tags: ["AI", "FinTech", "WorkBridge", "Game Dev"],
+    diff: {
+      file: "workbridge/portfolio_tetris.js",
+      before: [
+        "WorkBridge skill assessments needed engaging, game-based formats",
+        "Portfolio-construction instinct is hard to measure with a quiz",
+      ],
+      after: [
+        "Shipped Portfolio Tetris — a single-file browser game where money",
+        "bags fall Tetris-style into 6 asset classes (Equity, Debt, Real",
+        "Estate, Cash, Gold, Crypto) across 5 rounds",
+        "Live market events: 15s windows to sell losers / buy winners on news",
+        "0–1000 score: Sharpe-style risk-adjusted return, age-appropriate",
+        "allocation, HHI diversification, liquidity & sector caps",
+        "850+ unlocks the “Strategist” rank + downloadable JPG score card",
+        "In development: game #2 — 7 Word Pitch",
+      ],
+    },
+  },
   {
     hash: "57ockda5h",
     type: "feat",
@@ -485,6 +529,7 @@ export const NODE_COLORS: Record<NodeType, string> = {
   skill: "#38bdf8",
   project: "#34f5a4",
   experience: "#a78bfa",
+  internship: "#fb923c",
   achievement: "#fbbf24",
   education: "#f472b6",
 };
@@ -493,6 +538,7 @@ export const NODE_TYPE_LABEL: Record<NodeType, string> = {
   skill: "SKILL",
   project: "PROJECT",
   experience: "EXPERIENCE",
+  internship: "INTERNSHIP",
   achievement: "ACHIEVEMENT",
   education: "EDUCATION",
 };

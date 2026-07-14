@@ -148,6 +148,9 @@ export function routeIntent(raw: string): RoutedResponse {
       lines: [
         "[agent] professional runtime history:",
         "",
+        "▸ AI Intern — ZeTheta Algorithms Pvt Ltd (Current)",
+        ...nodeSummary("zetheta"),
+        "",
         "▸ ML Research Analyst — MPSTME (Jan 2026 – Present)",
         ...nodeSummary("ml-research"),
         "",
@@ -252,6 +255,18 @@ export function routeIntent(raw: string): RoutedResponse {
       ],
       tone: "info",
       actions: { focusNode: "ml-research" },
+    };
+  }
+
+  if (q.includes("zetheta") || q.includes("tetris") || q.includes("workbridge") || q.includes("game")) {
+    return {
+      lines: [
+        "[agent] ZeTheta Algorithms — current AI internship:",
+        ...nodeSummary("zetheta"),
+        "[sys] Portfolio Tetris: 6 asset classes · live market events · 0–1000 score",
+      ],
+      tone: "success",
+      actions: { focusNode: "zetheta" },
     };
   }
 

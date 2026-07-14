@@ -29,6 +29,7 @@ const RADIUS: Record<GraphNode["type"], number> = {
   project: 11,
   achievement: 9,
   experience: 8,
+  internship: 8,
   education: 8,
   skill: 5.5,
 };

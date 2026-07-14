@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 
 const ROLES = [
   "ML Research Analyst",
+  "AI Intern @ ZeTheta",
   "Agentic AI Engineer",
   "2× Hackathon Winner",
   "Full-Stack Developer",
